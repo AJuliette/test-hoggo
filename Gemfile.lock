@@ -2,6 +2,7 @@ GEM
   remote: https://rubygems.org/
   specs:
     json (2.2.0)
+    parslet (1.8.2)
     strscan (1.0.0)
 
 PLATFORMS
@@ -9,6 +10,7 @@ PLATFORMS
 
 DEPENDENCIES
   json
+  parslet
   strscan
 
 BUNDLED WITH

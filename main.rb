@@ -1,8 +1,10 @@
+require 'parslet'
 require 'strscan'
-require 'pry'
 require 'time'
 require 'json'
 require_relative 'lib/string.rb'
 require_relative 'lib/job.rb'
+require_relative 'lib/dsn_to_hash.rb'
+require_relative 'lib/dsn_parser.rb'
 
-Job.new(file: "data/TestDSN.rtf").run
+puts Job.new(file: "data/TestDSN.rtf").run
