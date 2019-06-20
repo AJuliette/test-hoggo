@@ -14,6 +14,8 @@ class Job
     employees_data
     sending_info_data
     output_json(data, "data/data.json")
+
+    pp log
   end
 
   def clean_input_data
@@ -35,33 +37,27 @@ class Job
   end
 
   def employees_data
-    number_of_employees = input_data.scan(/S21\.G00\.30\.001/).count
-    i = 1 
-    while i < number_of_employees do
-      employee = input_data.string_between_markers("S21.G00.30.001","S21.G00.30.001")
+    employees = scan_string(/S90\.G00\.90\.001/, input_data)
+    input_data.sub!(employees, '')
+    employees = employees.split("\\\n")
+    employees = employees.slice_before(/S21\.G00\.30\.001/).to_a
+    employees.each do |employee|
       organize_data_employee(employee)
-      i = i + 1
     end
-    employee = scan_string(/S90\.G00\.90\.001/, input_data)
-    organize_data_employee(employee)
   end
 
   def organize_data_employee(employee)
-    input_data.sub!(employee, '')
-    identity_string = scan_string(/S21\.G00\.50\.001/, employee)
-    employee.sub!(identity_string, '')
-    identity = identity_string.split("\\\n")
+    identity = employee.slice_before(/S21\.G00\.50\.001/).to_a.shift
     identity = parse_data(identity).reduce({}, :merge)
-    payment_string = scan_string(/S21\.G00\.78\.001/, employee)
-    employee.sub!(payment_string, '')
-    payment = details_of_payment(payment_string)
-    untreated_data = employee.split("\\\n")
+    payment = employee.slice_before(/S21\.G00\.50\.001/).to_a[1].slice_before(/S21\.G00\.78\.001/).to_a.shift
+    details_of_payment(payment)
+    payment = details_of_payment(payment)
+    untreated_data = employee.slice_before(/S21\.G00\.78\.001/).to_a.pop
     untreated_data = parse_data(untreated_data)
     log[:employees] << {identity: identity, payment: payment, untreated_data: untreated_data}
   end
 
-  def details_of_payment(payment_string)
-    payment = payment_string.split("\\\n")
+  def details_of_payment(payment)
     payment = payment.slice_before(/S21\.G00\.51\.001/).to_a
     payment = payment.map { |detail| parse_data(detail) }
     payment = payment.map { |array| array.reduce({}, :merge)}

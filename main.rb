@@ -1,5 +1,6 @@
 require 'strscan'
 require 'pp'
+require 'pry'
 require 'time'
 require 'json'
 require_relative 'lib/string.rb'
