@@ -1,0 +1,15 @@
+GEM
+  remote: https://rubygems.org/
+  specs:
+    json (2.2.0)
+    strscan (1.0.0)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  json
+  strscan
+
+BUNDLED WITH
+   1.16.6
